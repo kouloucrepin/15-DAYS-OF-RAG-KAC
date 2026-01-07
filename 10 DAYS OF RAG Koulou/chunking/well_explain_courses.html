@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LangChain Text Splitters</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #3B82F6;
+            --secondary-color: #06B6D4;
+            --accent-color: #8B5CF6;
+            --bg-color: #0F172A;
+            --card-bg: #1E293B;
+            --text-main: #F8FAFC;
+            --text-sub: #94A3B8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .poster-container {
+            width: 720px;
+            min-height: 960px;
+            background: radial-gradient(circle at top right, #1e293b 0%, #0f172a 100%);
+            position: relative;
+            overflow: hidden;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Decorative background elements */
+        .bg-shape {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: 0;
+        }
+        .shape-1 {
+            width: 300px;
+            height: 300px;
+            background: rgba(59, 130, 246, 0.15);
+            top: -50px;
+            left: -50px;
+        }
+        .shape-2 {
+            width: 400px;
+            height: 400px;
+            background: rgba(139, 92, 246, 0.1);
+            bottom: 100px;
+            right: -100px;
+        }
+
+        header {
+            z-index: 1;
+            margin-bottom: 30px;
+            text-align: left;
+        }
+
+        .tag {
+            display: inline-block;
+            background: rgba(6, 182, 212, 0.2);
+            color: var(--secondary-color);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 48px;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #fff 0%, #94a3b8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .intro {
+            font-size: 18px;
+            color: var(--text-sub);
+            line-height: 1.5;
+            max-width: 90%;
+            border-left: 4px solid var(--primary-color);
+            padding-left: 16px;
+            margin-bottom: 24px;
+        }
+
+        .main-image {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            opacity: 0.9;
+            z-index: 1;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            z-index: 1;
+            flex-grow: 1;
+        }
+
+        .card {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card:hover {
+            border-color: rgba(59, 130, 246, 0.4);
+        }
+
+        .card.full-width {
+            grid-column: span 2;
+        }
+
+        .card-number {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 40px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            color: rgba(255, 255, 255, 0.05);
+            line-height: 1;
+        }
+
+        .card-icon {
+            font-size: 32px;
+            margin-bottom: 12px;
+            color: var(--secondary-color);
+        }
+        
+        .card:nth-child(2n) .card-icon { color: var(--primary-color); }
+        .card:nth-child(3n) .card-icon { color: var(--accent-color); }
+
+        .card h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--text-main);
+        }
+
+        .card p {
+            font-size: 13px;
+            line-height: 1.5;
+            color: var(--text-sub);
+        }
+        
+        .highlight-code {
+            background: rgba(0,0,0,0.3);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            color: #fbbf24;
+            font-size: 0.9em;
+        }
+
+        footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 14px;
+            color: var(--text-sub);
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 15px;
+            z-index: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-brand {
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* Responsive text adjustments */
+        @media (max-width: 600px) {
+            h1 { font-size: 36px; }
+            .grid-container { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="poster-container">
+        <div class="bg-shape shape-1"></div>
+        <div class="bg-shape shape-2"></div>
+
+        <header>
+            <div class="tag">LangChain Helpers</div>
+            <h1>Les 7 Méthodes<br>de Text Splitting</h1>
+            <div class="intro">
+                <strong>Le but : Sortir la grosse artillerie.</strong><br>
+                Au lieu de bricoler nos fonctions, on importe. Une boîte à outils géante pour l'IA. Fini de réinventer la roue.
+            </div>
+            <img src="https://sfile.chatglm.cn/images-ppt/273ffb200e29.jpg" alt="LangChain Splitters Overview" class="main-image">
+        </header>
+
+        <div class="grid-container">
+            <!-- 1. Taille Fixe -->
+            <div class="card">
+                <div class="card-number">01</div>
+                <span class="material-icons card-icon">straighten</span>
+                <h3>Taille Fixe (Pro)</h3>
+                <p>Coupe précisément tous les X caractères. Version professionnelle codée par des experts. Rapide et sans bugs.</p>
+            </div>
+
+            <!-- 2. Chevauchement -->
+            <div class="card">
+                <div class="card-number">02</div>
+                <span class="material-icons card-icon">content_copy</span>
+                <h3>Chevauchement</h3>
+                <p>Ajoute <span class="highlight-code">chunk_overlap</span>. Comme des photocopies intelligentes, LangChain gère les calculs pour la continuité.</p>
+            </div>
+
+            <!-- 3. Sémantique -->
+            <div class="card">
+                <div class="card-number">03</div>
+                <span class="material-icons card-icon">format_quote</span>
+                <h3>Sémantique (Pro)</h3>
+                <p>Coupe uniquement aux points (.). Transforme le texte en une liste de phrases claires. Simple mais puissant.</p>
+            </div>
+
+            <!-- 4. Hiérarchique -->
+            <div class="card">
+                <div class="card-number">04</div>
+                <span class="material-icons card-icon">account_tree</span>
+                <h3>Hiérarchique / MD</h3>
+                <p>Coupe selon les titres (#, ###). Colle une étiquette sur chaque morceau (ex: "Chapitre 2"). Vital pour l'organisation.</p>
+            </div>
+
+            <!-- 5. Récursif -->
+            <div class="card full-width">
+                <div class="card-number">05</div>
+                <span class="material-icons card-icon" style="color: #ec4899;">autorenew</span>
+                <h3>Récursif (Standard Ind.)</h3>
+                <p>Le standard de l'industrie pour le RAG. Essaie de garder les paragraphes ensemble avec 50 caractères de sécurité. Le meilleur compromis jamais inventé.</p>
+            </div>
+
+            <!-- 6. Adaptatif -->
+            <div class="card">
+                <div class="card-number">06</div>
+                <span class="material-icons card-icon">smart_toy</span>
+                <h3>Adaptatif (Pro)</h3>
+                <p>Logique intelligente : si HTML -> fais ça, si texte -> fais ça. Assemble des blocs selon le contexte.</p>
+            </div>
+
+            <!-- 7. HTML Structurel -->
+            <div class="card">
+                <div class="card-number">07</div>
+                <span class="material-icons card-icon">code</span>
+                <h3>HTML Structurel</h3>
+                <p>Utilise <span class="highlight-code">HTMLHeaderTextSplitter</span>. Comprend H1, H2, H3 parfaitement sans se mélanger les pinceaux.</p>
+            </div>
+        </div>
+
+        <footer>
+            <div class="footer-brand">
+                <span class="material-icons" style="font-size: 18px;">link</span>
+                LangChain Mastery
+            </div>
+            <div>Optimisez votre Pipeline IA</div>
+        </footer>
+    </div>
+</body>
+</html>
