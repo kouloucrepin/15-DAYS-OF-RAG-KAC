@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prompt Engineering Poster</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4338ca; /* Indigo 700 */
+            --secondary-color: #7c3aed; /* Violet 600 */
+            --accent-color: #06b6d4; /* Cyan 500 */
+            --bg-color: #f8fafc;
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --text-dark: #1e293b;
+            --text-light: #f1f5f9;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #eef2f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .poster-container {
+            width: 720px;
+            min-height: 960px;
+            background: linear-gradient(135deg, #f0f4ff 0%, #e0e7ff 100%);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            padding: 40px;
+            color: var(--text-dark);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Background Decorations */
+        .bg-shape {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(60px);
+            z-index: 0;
+        }
+        .shape-1 {
+            width: 400px;
+            height: 400px;
+            background: rgba(67, 56, 202, 0.15);
+            top: -100px;
+            right: -100px;
+        }
+        .shape-2 {
+            width: 300px;
+            height: 300px;
+            background: rgba(124, 58, 237, 0.15);
+            bottom: -50px;
+            left: -50px;
+        }
+
+        /* Content Wrapper */
+        .content-wrapper {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            flex: 1;
+            gap: 25px;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 16px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 10px rgba(67, 56, 202, 0.3);
+        }
+
+        .title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 56px;
+            font-weight: 800;
+            line-height: 1.1;
+            background: linear-gradient(135deg, #312e81, #7c3aed);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 20px;
+            color: #475569;
+            font-weight: 400;
+            max-width: 80%;
+            margin: 0 auto;
+        }
+
+        /* Main Image */
+        .image-container {
+            width: 100%;
+            height: 240px;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 12px 25px rgba(0,0,0,0.08);
+            position: relative;
+            border: 1px solid rgba(255,255,255,0.6);
+        }
+
+        .image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            transition: transform 0.5s ease;
+        }
+        
+        /* Definition Card */
+        .card-definition {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            border-left: 6px solid var(--secondary-color);
+        }
+
+        .icon-box {
+            background: rgba(124, 58, 237, 0.1);
+            color: var(--secondary-color);
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .icon-box .material-icons {
+            font-size: 28px;
+        }
+
+        .def-text h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 20px;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+        }
+
+        .def-text p {
+            font-size: 15px;
+            line-height: 1.5;
+            color: #334155;
+        }
+
+        /* Principles Grid */
+        .principles-section {
+            margin-top: 5px;
+        }
+
+        .section-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 22px;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 22px;
+            background: var(--accent-color);
+            border-radius: 2px;
+            display: block;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .grid-item {
+            background: white;
+            padding: 20px 15px;
+            border-radius: 16px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            transition: transform 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .grid-item .material-icons {
+            font-size: 32px;
+            color: var(--accent-color);
+            margin-bottom: 12px;
+            background: rgba(6, 182, 212, 0.1);
+            padding: 10px;
+            border-radius: 50%;
+        }
+
+        .grid-item h4 {
+            font-size: 16px;
+            color: var(--text-dark);
+            margin-bottom: 6px;
+            font-weight: 700;
+        }
+
+        .grid-item p {
+            font-size: 13px;
+            color: #64748b;
+            line-height: 1.4;
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: auto;
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .footer-text {
+            font-size: 12px;
+            color: #94a3b8;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* Hand-drawn effect for emphasis */
+        .highlight {
+            position: relative;
+            z-index: 1;
+        }
+        
+    </style>
+</head>
+<body>
+
+    <div class="poster-container">
+        <!-- Background Shapes -->
+        <div class="bg-shape shape-1"></div>
+        <div class="bg-shape shape-2"></div>
+
+        <div class="content-wrapper">
+            
+            <!-- Header -->
+            <header class="header">
+                <span class="badge">AI Guide</span>
+                <h1 class="title">PROMPT<br>ENGINEERING</h1>
+                <p class="subtitle">L'art de communiquer efficacement avec l'intelligence artificielle</p>
+            </header>
+
+            <!-- Image Area -->
+            <div class="image-container">
+                <img src="https://sfile.chatglm.cn/images-ppt/027cb96e3ae5.png" alt="Prompt Engineering Diagram">
+            </div>
+
+            <!-- Definition -->
+            <div class="card-definition">
+                <div class="icon-box">
+                    <i class="material-icons">psychology</i>
+                </div>
+                <div class="def-text">
+                    <h3>Qu'est-ce que c'est ?</h3>
+                    <p>Une méthodologie pour concevoir et optimiser les instructions (prompts) afin de guider les modèles d'IA vers des résultats précis et de haute qualité.</p>
+                </div>
+            </div>
+
+            <!-- Principles Grid -->
+            <div class="principles-section">
+                <h2 class="section-title">Les 3 Piliers Clés</h2>
+                <div class="grid-container">
+                    <div class="grid-item">
+                        <i class="material-icons">gps_fixed</i>
+                        <h4>Précision</h4>
+                        <p>Soyez clair et spécifique dans votre demande pour éviter les ambiguïtés.</p>
+                    </div>
+                    <div class="grid-item">
+                        <i class="material-icons">menu_book</i>
+                        <h4>Contexte</h4>
+                        <p>Fournissez le contexte nécessaire à l'IA pour qu'elle comprenne la situation.</p>
+                    </div>
+                    <div class="grid-item">
+                        <i class="material-icons">sync</i>
+                        <h4>Itération</h4>
+                        <p>Affinez et ajustez vos prompts progressivement pour améliorer le résultat.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <footer class="footer">
+                <p class="footer-text">Optimisez votre interaction avec l'IA</p>
+            </footer>
+        </div>
+    </div>
+
+</body>
+</html>
